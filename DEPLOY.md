@@ -27,6 +27,8 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 |--------|--------|
 | `SUPABASE_URL` | `https://YOUR_PROJECT.supabase.co` (no `/rest/v1/`) |
 | `SUPABASE_ANON_KEY` | Publishable key (`sb_publishable_...`) or anon key (`eyJ...`) |
+| `DEMO_EMAIL` | *(optional)* defaults to `demo@finflow.lelarge.dev` |
+| `DEMO_PASSWORD` | *(optional)* defaults to portfolio demo password in `DemoConfig` |
 
 Push to `main` or run **Actions → Deploy to GitHub Pages → Run workflow**.
 
