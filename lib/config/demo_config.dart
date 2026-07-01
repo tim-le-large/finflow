@@ -1,5 +1,3 @@
-import 'supabase_config.dart';
-
 /// Public demo account for the portfolio live site.
 /// Override via `--dart-define` or `dart_defines.json` if needed.
 abstract final class DemoConfig {
@@ -16,6 +14,6 @@ abstract final class DemoConfig {
     return fromEnv.isNotEmpty ? fromEnv : defaultPassword;
   }
 
-  /// Show demo button when Supabase is configured (demo creds have public defaults).
-  static bool get isConfigured => SupabaseConfig.isConfigured;
+  /// Portfolio demo is always available (public credentials with compile-time overrides).
+  static bool get isConfigured => true;
 }

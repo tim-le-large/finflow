@@ -115,6 +115,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                     ),
                     const SizedBox(height: 32),
+                    if (!_isSignUp) ...[
+                      FilledButton.tonalIcon(
+                        onPressed: _isLoading ? null : _tryDemo,
+                        icon: const Icon(Icons.play_circle_outline),
+                        label: const Text('Live-Demo starten'),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Gemeinsames Demo-Konto — keine Registrierung nötig.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: scheme.outlineVariant)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'oder anmelden',
+                              style: TextStyle(color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: scheme.outlineVariant)),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -178,36 +208,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : 'Neu hier? Konto erstellen',
                       ),
                     ),
-                    if (DemoConfig.isConfigured && !_isSignUp) ...[
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(child: Divider(color: scheme.outlineVariant)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              'oder',
-                              style: TextStyle(color: scheme.onSurfaceVariant),
-                            ),
-                          ),
-                          Expanded(child: Divider(color: scheme.outlineVariant)),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      OutlinedButton.icon(
-                        onPressed: _isLoading ? null : _tryDemo,
-                        icon: const Icon(Icons.play_circle_outline),
-                        label: const Text('Live-Demo starten'),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Gemeinsames Demo-Konto — keine Registrierung nötig.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: scheme.onSurfaceVariant,
-                            ),
-                      ),
-                    ],
                   ],
                 ),
               ),
