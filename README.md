@@ -2,7 +2,7 @@
 
 Personal finance dashboard with **Flutter**, **Riverpod**, and **Supabase**.
 
-**Live:** [finflow.lelarge.dev](https://finflow.lelarge.dev) (coming soon)
+**Live:** [finflow.lelarge.dev](https://finflow.lelarge.dev)
 
 ## Features
 
@@ -12,6 +12,7 @@ Personal finance dashboard with **Flutter**, **Riverpod**, and **Supabase**.
 - Monthly donut chart + month-over-month comparison
 - Demo data seeded on first login
 - Pull-to-refresh
+- **Live demo** button (no sign-up required)
 
 ## Setup
 
@@ -34,7 +35,16 @@ flutter run -d chrome --dart-define-from-file=dart_defines.json
 
 Or use the **FinFlow (Chrome)** launch config in VS Code/Cursor (`.vscode/launch.json`).
 
-CI uses GitHub Actions secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) — see [DEPLOY.md](DEPLOY.md).
+CI uses GitHub Actions secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `DEMO_EMAIL`, `DEMO_PASSWORD`) — see [DEPLOY.md](DEPLOY.md).
+
+### Demo account (portfolio)
+
+Create once in **Supabase Auth**:
+
+- Email: `demo@finflow.lelarge.dev`
+- Password: `FinFlowDemo2026!`
+
+Add `DEMO_EMAIL` and `DEMO_PASSWORD` to `dart_defines.json`. The login screen shows **Live-Demo starten** — demo transactions are seeded automatically on first load.
 
 ### 3. Run
 
