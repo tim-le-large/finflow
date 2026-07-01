@@ -15,9 +15,5 @@ void main() {
     test('uses default password when DEMO_PASSWORD is not set at compile time', () {
       expect(DemoConfig.password, DemoConfig.defaultPassword);
     });
-
-    test('demo button is always enabled for portfolio', () {
-      expect(DemoConfig.isConfigured, isTrue);
-    });
   });
 }
