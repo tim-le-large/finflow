@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../config/demo_config.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -25,6 +26,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  Future<void> _signIn(String email, String password) async {
+    final client = ref.read(supabaseClientProvider);
+    await client.auth.signInWithPassword(email: email, password: password);
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -41,8 +47,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (_isSignUp) {
         await client.auth.signUp(email: email, password: password);
       } else {
-        await client.auth.signInWithPassword(email: email, password: password);
+        await _signIn(email, password);
       }
+    } catch (error) {
+      if (mounted) {
+        setState(() => _errorMessage = error.toString());
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _tryDemo() async {
+    if (!DemoConfig.isConfigured) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _signIn(DemoConfig.email, DemoConfig.password);
     } catch (error) {
       if (mounted) {
         setState(() => _errorMessage = error.toString());
@@ -151,6 +178,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : 'Neu hier? Konto erstellen',
                       ),
                     ),
+                    if (DemoConfig.isConfigured && !_isSignUp) ...[
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: scheme.outlineVariant)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'oder',
+                              style: TextStyle(color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: scheme.outlineVariant)),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _tryDemo,
+                        icon: const Icon(Icons.play_circle_outline),
+                        label: const Text('Live-Demo starten'),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Gemeinsames Demo-Konto — keine Registrierung nötig.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                      ),
+                    ],
                   ],
                 ),
               ),

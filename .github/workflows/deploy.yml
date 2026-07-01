@@ -31,7 +31,9 @@ jobs:
         run: |
           flutter build web --release --base-href "/" \
             --dart-define=SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
-            --dart-define=SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}"
+            --dart-define=SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}" \
+            --dart-define=DEMO_EMAIL="${{ secrets.DEMO_EMAIL }}" \
+            --dart-define=DEMO_PASSWORD="${{ secrets.DEMO_PASSWORD }}"
 
       - uses: actions/upload-pages-artifact@v3
         with:
