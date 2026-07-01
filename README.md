@@ -110,6 +110,23 @@ See **[DEPLOY.md](DEPLOY.md)** for GitHub Actions secrets, custom domain, and Su
 
 ---
 
+## Tests
+
+```bash
+flutter test
+```
+
+| File | Covers |
+|------|--------|
+| `test/money_parser_test.dart` | Euro input → cents |
+| `test/demo_data_test.dart` | Demo seed sizes and transaction types |
+| `test/demo_config_test.dart` | Portfolio demo credentials |
+| `test/widget_test.dart` | App boots without Supabase config |
+
+Tests run in CI before every GitHub Pages deploy.
+
+---
+
 ## Roadmap
 
 - CSV bank import + auto-categorization
