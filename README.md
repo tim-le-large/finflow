@@ -24,20 +24,17 @@ Personal finance dashboard with **Flutter**, **Riverpod**, and **Supabase**.
 
 ### 2. Configure credentials
 
-Either paste into `lib/config/supabase_config.dart`:
+Copy `dart_defines.example.json` to `dart_defines.json` and fill in your Supabase URL and publishable key.
 
-```dart
-static const _localUrl = 'https://YOUR_PROJECT.supabase.co';
-static const _localAnonKey = 'eyJ...';
-```
-
-Or pass at run time:
+Local run:
 
 ```bash
-flutter run -d chrome \
-  --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=eyJ...
+flutter run -d chrome --dart-define-from-file=dart_defines.json
 ```
+
+Or use the **FinFlow (Chrome)** launch config in VS Code/Cursor (`.vscode/launch.json`).
+
+CI uses GitHub Actions secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) — see [DEPLOY.md](DEPLOY.md).
 
 ### 3. Run
 

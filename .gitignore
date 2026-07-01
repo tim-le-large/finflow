@@ -44,5 +44,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Local Supabase credentials (use supabase_config.example.dart as template)
-lib/config/supabase_config.dart
+# Local Supabase credentials (copy dart_defines.example.json)
+dart_defines.json

@@ -25,17 +25,15 @@ class SupabaseSetupScreen extends StatelessWidget {
               const Text(
                 '1. Projekt auf supabase.com anlegen\n'
                 '2. SQL aus supabase/schema.sql ausführen\n'
-                '3. URL + anon key eintragen:\n\n'
-                '   lib/config/supabase_config.dart\n'
-                '   oder per --dart-define beim Start\n\n'
+                '3. dart_defines.example.json → dart_defines.json kopieren\n'
+                '   URL + publishable key eintragen\n\n'
                 '4. Auth → Email aktivieren\n'
-                '5. flutter run -d chrome',
+                '5. flutter run -d chrome --dart-define-from-file=dart_defines.json',
               ),
               const SizedBox(height: 24),
               SelectableText(
                 'flutter run -d chrome \\\n'
-                '  --dart-define=SUPABASE_URL=https://xxx.supabase.co \\\n'
-                '  --dart-define=SUPABASE_ANON_KEY=eyJ...',
+                '  --dart-define-from-file=dart_defines.json',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontFamily: 'monospace',
                     ),
