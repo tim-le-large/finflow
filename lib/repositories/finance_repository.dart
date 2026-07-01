@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/demo_config.dart';
 import '../data/demo_data.dart';
 import '../models/account.dart';
 import '../models/transaction.dart';
@@ -14,12 +15,19 @@ class FinanceRepository {
 
   final SupabaseClient _client;
 
+  static const _richDemoMinTransactions = 45;
+
   String get _userId {
     final id = _client.auth.currentUser?.id;
     if (id == null) {
       throw const AuthException('Not signed in');
     }
     return id;
+  }
+
+  bool get _isDemoUser {
+    if (!DemoConfig.isConfigured) return false;
+    return _client.auth.currentUser?.email == DemoConfig.email;
   }
 
   Future<List<Account>> fetchAccounts() async {
@@ -69,35 +77,55 @@ class FinanceRepository {
   }
 
   Future<void> seedDemoDataIfEmpty() async {
-    final existing = await fetchAccounts();
-    if (existing.isNotEmpty) return;
+    final accounts = await fetchAccounts();
+    final transactions =
+        accounts.isEmpty ? <Transaction>[] : await fetchTransactions();
 
-    final giroRow = await _client
-        .from('accounts')
-        .insert({
-          'user_id': _userId,
-          'name': 'Girokonto',
-          'initial_balance_cents': 245000,
-        })
-        .select()
-        .single();
+    if (_isDemoUser) {
+      if (transactions.length >= _richDemoMinTransactions) return;
+      if (accounts.isNotEmpty) {
+        await _clearUserFinanceData();
+      }
+      await _insertSeed(
+        accountDefs: richDemoAccounts,
+        transactionDefs: richDemoTransactions,
+      );
+      return;
+    }
 
-    final cardRow = await _client
-        .from('accounts')
-        .insert({
-          'user_id': _userId,
-          'name': 'Kreditkarte',
-          'initial_balance_cents': 0,
-        })
-        .select()
-        .single();
+    if (accounts.isNotEmpty) return;
 
-    final accountIds = {
-      'giro': giroRow['id'] as String,
-      'card': cardRow['id'] as String,
-    };
+    await _insertSeed(
+      accountDefs: demoAccounts,
+      transactionDefs: demoTransactions,
+    );
+  }
 
-    final seedRows = demoTransactions.map((transaction) {
+  Future<void> _clearUserFinanceData() async {
+    await _client.from('transactions').delete().eq('user_id', _userId);
+    await _client.from('accounts').delete().eq('user_id', _userId);
+  }
+
+  Future<void> _insertSeed({
+    required List<Account> accountDefs,
+    required List<Transaction> transactionDefs,
+  }) async {
+    final accountIds = <String, String>{};
+
+    for (final account in accountDefs) {
+      final row = await _client
+          .from('accounts')
+          .insert({
+            'user_id': _userId,
+            'name': account.name,
+            'initial_balance_cents': account.initialBalanceCents,
+          })
+          .select()
+          .single();
+      accountIds[account.id] = row['id'] as String;
+    }
+
+    final seedRows = transactionDefs.map((transaction) {
       return {
         'user_id': _userId,
         'account_id': accountIds[transaction.accountId]!,
@@ -109,7 +137,11 @@ class FinanceRepository {
       };
     }).toList();
 
-    await _client.from('transactions').insert(seedRows);
+    const batchSize = 100;
+    for (var i = 0; i < seedRows.length; i += batchSize) {
+      final end = (i + batchSize < seedRows.length) ? i + batchSize : seedRows.length;
+      await _client.from('transactions').insert(seedRows.sublist(i, end));
+    }
   }
 
   Transaction _transactionFromRow(Map<String, dynamic> row) {
